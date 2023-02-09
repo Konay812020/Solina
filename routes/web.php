@@ -3,6 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers;
+use App\Http\Controllers\AuthController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,7 +22,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('admin.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -27,5 +30,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/admin/logout', 'destroy')->name('admin.logout');
+    Route::get('/admin/profile', 'showprofile')->name('admin.profile');
+    Route::get('/admin/editprofile', 'editprofile')->name('admin.editprofile');
+    Route::post('/admin/storeprofile', 'storeprofile')->name('admin.storeprofile');
 
-require __DIR__.'/auth.php';
+    Route::get('/admin/changepassword', 'changepassword')->name('admin.auth.changepassword');
+    Route::post('/admin/updatepassword', 'updatepassword')->name('admin.updatepassword');
+});
+
+require __DIR__ . '/auth.php';
